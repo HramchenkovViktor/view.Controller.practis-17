@@ -15,6 +15,10 @@ struct Car {
     let nameImage: ImageResource
 }
 
+protocol CarsTransmitionDelegate: AnyObject {
+    func carTransmition(_ car: Car)
+}
+
 class CarListViewController: UIViewController {
     let cars: [Car] = [
         Car(name: "BMW M5", year: 2024, country: "Germany", nameImage: .bmwM5),
@@ -32,7 +36,7 @@ class CarListViewController: UIViewController {
     ]
     let tableView = UITableView()
     private let cellidentifier = "CarCell"
-    
+    weak var delegate: CarsTransmitionDelegate?
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -45,7 +49,7 @@ class CarListViewController: UIViewController {
         view.addSubview(tableView)
         tableView.dataSource = self
         tableView.delegate = self
-        
+        tableView.register(CarListTableViewCell.self, forCellReuseIdentifier: cellidentifier)
     }
     
     func setupConstraints() {
@@ -74,5 +78,11 @@ extension CarListViewController: UITableViewDataSource {
 }
 
 extension CarListViewController: UITableViewDelegate {
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let car = cars[indexPath.row]
+        delegate?.carTransmition(car)
+        navigationController?.popViewController(animated: true)
+    }
 }
+
+

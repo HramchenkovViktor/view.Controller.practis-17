@@ -90,12 +90,21 @@ class ViewController: UIViewController {
     }
     @objc private func selectedButtonTapped(){
         let viewController = CarListViewController()
-        
+        viewController.delegate = self
         navigationController?.pushViewController(viewController, animated: true)
     }
     
 }
 
-
+extension ViewController: CarsTransmitionDelegate {
+    func carTransmition(_ car: Car) {
+        titleCard.text = """
+                        \(car.name),
+                        \(car.year),
+                        \(car.country),
+            """
+        autoImage.image = UIImage(resource: car.nameImage)
+    }
+}
 
 
